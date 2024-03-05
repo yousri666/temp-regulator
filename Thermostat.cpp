@@ -7,6 +7,7 @@ Thermostat::Thermostat(int min, int max, Heater* heater, Cooler* cooler): _minTe
 
 int Thermostat::getCurrentTemp(void) const
 {
+    //temperature could be measured from sensor
     return _currentTemp;
 }
 
@@ -33,11 +34,10 @@ void Thermostat::setMaxTemp(int max)
 void Thermostat::adjustTemp(void)
 {
     int temp = getCurrentTemp();
-    if(abs(temp) < abs(_minTemp)) {
+    if(temp < _minTemp) {
         _heater->start();
     }        
-    else if(abs(temp) > abs(_maxTemp)) {
+    else if(temp > _maxTemp) {
         _cooler->start();
     }
-        
 }

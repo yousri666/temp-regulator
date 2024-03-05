@@ -32,14 +32,14 @@ protected:
     
 };
 
-TEST_F(ThermostatTests, Increase)
+TEST_F(ThermostatTests, Heat)
 {
     EXPECT_CALL(*t, getCurrentTemp()).WillOnce(testing::Return(7));
     EXPECT_CALL(t->heater, start()).Times(1);
     t->adjustTemp();
 }
 
-TEST_F(ThermostatTests, Decrease)
+TEST_F(ThermostatTests, Cool)
 {
     EXPECT_CALL(*t, getCurrentTemp()).WillOnce(testing::Return(23));
     EXPECT_CALL(t->cooler, start()).Times(1);
@@ -51,5 +51,19 @@ TEST_F(ThermostatTests, NoChange)
     EXPECT_CALL(*t, getCurrentTemp()).WillOnce(testing::Return(17));
     EXPECT_CALL(t->heater, start()).Times(0);
     EXPECT_CALL(t->cooler, start()).Times(0);
+    t->adjustTemp();
+}
+
+TEST_F(ThermostatTests,HeatNegTemp) {
+    t = std::make_unique<MockThermostat>(-20, -15);
+    EXPECT_CALL(*t, getCurrentTemp()).WillOnce(testing::Return(-23));
+    EXPECT_CALL(t->heater, start()).Times(1);
+    t->adjustTemp();
+}
+
+TEST_F(ThermostatTests,CoolNegTemp) {
+    t = std::make_unique<MockThermostat>(-20, -15);
+    EXPECT_CALL(*t, getCurrentTemp()).WillOnce(testing::Return(-12));
+    EXPECT_CALL(t->cooler, start()).Times(1);
     t->adjustTemp();
 }
